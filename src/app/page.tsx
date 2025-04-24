@@ -1,19 +1,25 @@
-"use client"
+"use client";
 
-import Link from "next/link";
 import styles from "./page.module.css";
-import { SessionProvider } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import LogoutButton from "./components/LogoutButton";
+import LoginButton from "./components/LoginButton";
+import { LinkWithStyles } from "./components/LinkWithStyles";
 
 export default function Home() {
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
 
   return (
-    <SessionProvider>
-      <div className={styles.page}>
-        <p>Main page</p>
-        <p>
-          Page with redirect: <Link href="/dashboard">Dashboard</Link>
-        </p>
-      </div>
-    </SessionProvider>
+    <div className={styles.page}>
+      <p>Main page</p>
+      <p>
+        Page with redirect: <LinkWithStyles href="/dashboard" text="Dashboard"/>
+      </p>
+      {session ? <LogoutButton /> : <LoginButton />}
+    </div>
   );
 }
