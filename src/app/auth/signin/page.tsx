@@ -13,7 +13,9 @@ export default function SignIn() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    session && router.push("/dashboard");
+    if (session) {
+      router.push("/dashboard");
+    }
   }, [session]);
 
   const handleGoogleLogin = async () => {
@@ -22,9 +24,11 @@ export default function SignIn() {
 
     try {
       const result = await signIn("google", {redirect: false});
-      if (result?.ok) router.push("/dashboard");
-
-      result?.error && setError("Something is wrong, please try again");
+      if (result?.ok) {
+        router.push("/dashboard")
+      } else if (result?.error) {
+        setError("Something is wrong, please try again");
+      }
     } catch (err) {
       console.error(err);
       setError("Something is wrong, please try again");
